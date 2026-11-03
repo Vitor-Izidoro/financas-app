@@ -20,4 +20,4 @@ HTML, CSS e JavaScript puros, sem dependências e sem build. Service worker para
 Abra o link do GitHub Pages no Chrome → menu ⋮ → **Adicionar à tela inicial / Instalar app**.
 
 ## Publicar atualizações
-Ao alterar arquivos, aumente `VERSAO` em `sw.js` para que os celulares baixem a nova versão.
+Ao alterar arquivos, aumente `VERSAO` em `sw.js` e `VERSAO_APP` em `app.js`. Com internet, o app sempre busca a versão mais nova ao abrir (rede primeiro, cache só offline); em Ajustes há o botão "Atualizar agora" e a versão instalada.

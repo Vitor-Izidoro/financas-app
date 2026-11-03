@@ -5,6 +5,7 @@
    ========================================================= */
 
 const CHAVE = 'financas-app:v1';
+const VERSAO_APP = 3; // aumente junto com VERSAO em sw.js
 const CORES = ['#0f766e', '#2563eb', '#7c3aed', '#db2777', '#dc2626', '#ea580c', '#ca8a04', '#65a30d', '#0891b2', '#475569'];
 const DIAS_LEMBRETE_BACKUP = 14;
 const COR_FIXOS = '#7c3aed', COR_PARCELAS = '#ea580c';
@@ -794,7 +795,11 @@ function telaAjustes() {
     </div>
     <div class="secao-titulo"><span>Zona de perigo</span></div>
     <div class="cartao"><button class="btn perigo bloco" data-acao="apagar-tudo">Apagar todos os dados</button></div>
-    <p class="rodape">Finanças · funciona offline${UI.persistente == null ? '' : ' · armazenamento ' + (UI.persistente ? 'protegido' : 'padrão')}</p>`;
+    <div class="secao-titulo"><span>Atualização</span></div>
+    <div class="cartao"><p style="margin:0 0 12px;font-size:.9rem">Versão instalada: <b>${VERSAO_APP}</b>. Com internet, o app se atualiza sozinho ao abrir.</p>
+      <button class="btn bloco" data-acao="atualizar-agora">Atualizar agora</button>
+      <p class="ajuda" style="margin:8px 0 0">Baixa de novo os arquivos do app. Seus lançamentos não são apagados.</p></div>
+    <p class="rodape">Finanças v${VERSAO_APP} · funciona offline${UI.persistente == null ? '' : ' · armazenamento ' + (UI.persistente ? 'protegido' : 'padrão')}</p>`;
 }
 
 /* ---------- Folha inferior (sheet) ---------- */
@@ -1529,6 +1534,7 @@ document.addEventListener('click', e => {
     case 'fechar-sheet': fecharSheet(); break;
     case 'exportar': exportar(); break;
     case 'importar': $('#arquivo-import').click(); break;
+    case 'atualizar-agora': atualizarAgora(); break;
     case 'apagar-tudo':
       if (!confirm('Apagar TODOS os dados deste aparelho? Isso não pode ser desfeito.')) return;
       if (prompt('Para confirmar, digite APAGAR') !== 'APAGAR') return toast('Cancelado');
@@ -1555,8 +1561,34 @@ render();
 agendarBackupAutomatico();
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') agendarBackupAutomatico(); });
 
+/* ---------- Atualização do app ---------- */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(err => console.error('Falha ao registrar service worker', err)));
+  // Quando uma versão nova assume o controle, recarrega uma vez para usá-la
+  const tinhaControlador = !!navigator.serviceWorker.controller;
+  let recarregando = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!tinhaControlador || recarregando) return;
+    recarregando = true;
+    location.reload();
+  });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
+      .then(reg => {
+        // Verifica atualização sempre que o app volta para a tela
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+      })
+      .catch(err => console.error('Falha ao registrar service worker', err));
+  });
+}
+/** Remove o service worker e os arquivos guardados (não mexe nos dados) e recarrega. */
+async function atualizarAgora() {
+  if (!navigator.onLine) return toast('Sem internet — conecte-se para atualizar');
+  toast('Atualizando…');
+  try {
+    if ('serviceWorker' in navigator) for (const reg of await navigator.serviceWorker.getRegistrations()) await reg.unregister();
+    if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
+  } catch (err) { console.error('Falha ao limpar cache do app', err); }
+  location.reload();
 }
 // Pede ao navegador para não apagar os dados quando faltar espaço
 if (navigator.storage && navigator.storage.persist) {
