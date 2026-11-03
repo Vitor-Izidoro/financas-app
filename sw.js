@@ -1,7 +1,7 @@
 /* Service worker: guarda o app em cache para funcionar offline.
    Estratégia: responde do cache e atualiza em segundo plano (a versão nova aparece na próxima abertura).
    Ao publicar mudanças, aumente VERSAO. */
-const VERSAO = 'financas-v1';
+const VERSAO = 'financas-v2';
 const ARQUIVOS = [
   './', './index.html', './style.css', './app.js', './manifest.json',
   './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png',

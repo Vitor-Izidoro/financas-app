@@ -156,6 +156,7 @@ main { padding: 4px 16px 24px; max-width: 640px; margin: 0 auto; }
   background: var(--cartao-2); color: var(--texto);
 }
 .btn.primario { background: var(--primaria); color: var(--primaria-texto); }
+.btn.perigo-forte { background: var(--saida); color: #fff; }
 .btn.perigo { background: color-mix(in srgb, var(--saida) 14%, transparent); color: var(--saida); }
 .btn.peq { padding: 6px 12px; font-size: .85rem; border-radius: 10px; }
 .btn.bloco { width: 100%; }
@@ -243,10 +244,13 @@ main { padding: 4px 16px 24px; max-width: 640px; margin: 0 auto; }
 .legenda i { width: 10px; height: 10px; border-radius: 3px; background: var(--cor); flex: none; }
 .legenda span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .legenda b { font-weight: 600; }
-.barras svg { width: 100%; height: auto; display: block; }
-.barras text { fill: var(--texto-2); stroke: none; font-size: 11px; }
-.barras rect, .barras line { stroke-width: 1; }
-.barras rect { stroke: none; }
+.grafico svg { width: 100%; height: auto; display: block; }
+.grafico text { fill: var(--texto-2); stroke: none; font-size: 10px; }
+.grafico text.txt-pos { fill: var(--entrada); font-weight: 700; }
+.grafico text.txt-neg { fill: var(--saida); font-weight: 700; }
+.grafico rect { stroke: none; }
+.grafico-topo { display: flex; justify-content: space-between; align-items: center; margin: -4px 0 6px; }
+.grafico-topo h2 { margin: 0; }
 .legenda-h { display: flex; gap: 16px; font-size: .8rem; color: var(--texto-2); margin-top: 8px; }
 .legenda-h i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 
@@ -271,3 +275,8 @@ main { padding: 4px 16px 24px; max-width: 640px; margin: 0 auto; }
 .toast.visivel { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 .rodape { text-align: center; color: var(--texto-2); font-size: .78rem; margin-top: 24px; }
+
+.item-sub.quebra { white-space: normal; }
+.sheet .sub ul { margin: 8px 0; padding-left: 20px; }
+.sheet .sub p { margin: 8px 0; }
+.cartao-chip { border-left-style: dashed; }
